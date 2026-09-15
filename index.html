@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
+      <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -65,6 +65,13 @@
       white-space: nowrap;
     }
     nav a:hover { background: var(--gray-light); color: var(--red); }
+    .btn-nav {
+      background: var(--red) !important;
+      color: var(--white) !important;
+      border-radius: 25px !important;
+      padding: 10px 22px !important;
+    }
+    .btn-nav:hover { background: var(--red-dark) !important; }
 
     .hamburger {
       display: none;
@@ -505,9 +512,35 @@
     .footer-bottom a:hover { color: var(--red); opacity: 1; }
 
     /* ========== FLOATING BUTTONS ========== */
-    .whatsapp-btn {
+    .emergency-btn {
       position: fixed;
       bottom: 28px; right: 28px;
+      z-index: 5000;
+      background: var(--red);
+      color: var(--white);
+      border: none;
+      border-radius: 50px;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: var(--font);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 6px 28px rgba(232,25,44,.5);
+      animation: pulse 2s infinite;
+      transition: transform .2s;
+      text-decoration: none;
+    }
+    .emergency-btn:hover { transform: scale(1.05); animation: none; background: var(--red-dark); }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 6px 28px rgba(232,25,44,.5); }
+      50%       { box-shadow: 0 6px 44px rgba(232,25,44,.82); }
+    }
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 98px; right: 28px;
       z-index: 5000;
       width: 54px; height: 54px;
       border-radius: 50%;
@@ -559,7 +592,8 @@
       .footer-grid { grid-template-columns: 1fr; gap: 30px; }
       .footer-logo img { height: 72px; }
       .footer-bottom-inner { flex-direction: column; gap: 8px; text-align: center; }
-      .whatsapp-btn { bottom: 20px; right: 16px; }
+      .emergency-btn { bottom: 20px; right: 16px; font-size: 13px; padding: 12px 18px; }
+      .whatsapp-btn { bottom: 84px; right: 16px; }
     }
   </style>
 </head>
@@ -581,6 +615,7 @@
         <a href="#nosotros">Quiénes somos</a>
         <a href="#testimonios">Testimonios</a>
         <a href="#contacto">Contacto</a>
+        <a id="tel-link" href="tel:+5492944226255" class="btn-nav"><i class="fas fa-phone-alt"></i> Llamar ahora</a>
       </nav>
     </div>
   </header>
@@ -603,7 +638,7 @@
 
       <!-- SLIDE 2 -->
       <div class="slide">
-        <div class="slide-bg" style="background-image: url('images/slide_2.jpg');"></div>
+        <div class="slide-bg" style="background: linear-gradient(135deg, #1a3a5c 0%, #1a1a2e 100%);"></div>
         <div class="slide-overlay"></div>
         <div class="slide-content">
           <span class="slide-tag">Eventos y coberturas</span>
@@ -615,7 +650,7 @@
 
       <!-- SLIDE 3 -->
       <div class="slide">
-        <div class="slide-bg" style="background-image: url('images/slide_3.jpg');"></div>
+        <div class="slide-bg" style="background: linear-gradient(135deg, #1b4332 0%, #1a1a2e 100%);"></div>
         <div class="slide-overlay"></div>
         <div class="slide-content">
           <span class="slide-tag">Traslados programados</span>
@@ -870,10 +905,17 @@
               </div>
             </div>
             <div class="contacto-item">
+              <div class="ico"><i class="fab fa-whatsapp"></i></div>
+              <div class="info">
+                <div class="label">WhatsApp</div>
+                <div class="val">+54 9 294 491-6324</div>
+              </div>
+            </div>
+            <div class="contacto-item">
               <div class="ico"><i class="fas fa-envelope"></i></div>
               <div class="info">
                 <div class="label">Email</div>
-                <div class="val">ambulanciascaher19@gmail.com</div>
+                <div class="val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="432a2d252c0320222b2631727a6d202c2e6d2231">[email&#160;protected]</a></div>
               </div>
             </div>
 
@@ -1004,12 +1046,25 @@
   </footer>
 
   <!-- FLOATING BUTTONS -->
+  <a id="tel-link" href="tel:+5492944226255" class="emergency-btn">
+    <i class="fas fa-ambulance"></i> Emergencias
+  </a>
   <a id="wa-link-qa" href="https://wa.me/5492944226255" class="whatsapp-btn" target="_blank" aria-label="WhatsApp">
     <i class="fab fa-whatsapp"></i>
   </a>
 
   <!-- ===================== SCRIPTS ===================== -->
   <script>
+
+    // Actualizar links de teléfono y WhatsApp en toda la página desde la config central
+    document.querySelectorAll('a[href^="tel:"]').forEach(function(a) {
+      a.href = 'tel:' + TEL_NUMBER;
+    });
+    document.querySelectorAll('a[href*="wa.me"]').forEach(function(a) {
+      if (!a.classList.contains('btn-form')) {
+        a.href = 'https://wa.me/' + WA_NUMBER;
+      }
+    });
 
     // ---- SLIDER ----
     const slidesEl = document.getElementById('slides');
@@ -1037,9 +1092,12 @@
     });
 
     // ---- FORM → WHATSAPP ----
+    // ⚠️ Reemplazá por el número real: código país + área + número, sin +, sin espacios
     // ── CONFIGURACIÓN CENTRAL ──────────────────────────────────────────
-    // Número de WhatsApp del formulario de contacto
-    var WA_NUMBER = '5492944631371';
+    // Editá solo acá para cambiar el número en toda la página
+    var WA_NUMBER   = '5492944226255';
+    var TEL_NUMBER  = '+5492944226255';
+    var TEL_DISPLAY = '+54 9 294 491-6324';
 
     function submitForm() {
       var nombre   = document.getElementById('nombre').value.trim();
@@ -1072,7 +1130,7 @@
         var target = document.querySelector(id);
         if (target) {
           e.preventDefault();
-          var top = target.getBoundingClientRect().top + window.scrollY - 100;
+          var top = target.getBoundingClientRect().top + window.scrollY - 80;
           window.scrollTo({ top: top, behavior: 'smooth' });
         }
       });
